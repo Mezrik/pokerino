@@ -1,0 +1,17 @@
+{
+  "name": "client",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "npx tailwindcss --config tailwind.config.js --postcss postcss.config.js -i ./wwwroot/css/styles.css -o ./wwwroot/css/styles.min.css",
+    "watch": "npx tailwindcss --config tailwind.config.js --postcss postcss.config.js -i ./wwwroot/css/styles.css -o ./wwwroot/css/styles.min.css --watch",
+    "publish": "npx tailwindcss --config tailwind.config.js --postcss postcss.config.js -i ./wwwroot/css/styles.css -o ./wwwroot/css/styles.min.css --minify"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "tailwindcss": "^3.3.2"
+  }
+}
