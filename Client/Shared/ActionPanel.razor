@@ -1,0 +1,31 @@
+﻿@inherits LayoutComponentBase
+
+<div class="bg-white rounded flex-1 dark:bg-gray-800 shadow sm:rounded-lg">
+    <div class="px-4 py-5 sm:p-6 h-full flex flex-col">
+        @if (Title is not null)
+        {
+            <h3 class="text-xl font-semibold text-gray-900 dark:text-white">@Title</h3>
+        }
+
+        @if (Description is not null)
+        {
+            <div class="mt-2 max-w-xl text-sm text-gray-500 dark:text-gray-400">
+                <p>@Description</p>
+            </div>
+        }
+
+        @if (Body is not null)
+        {
+            @Body
+        }
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public RenderFragment? Title { get; set; }
+
+    [Parameter]
+    public RenderFragment? Description { get; set; }
+}
+

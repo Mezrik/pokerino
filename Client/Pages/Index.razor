@@ -1,9 +1,83 @@
 ﻿@page "/"
+@using System.ComponentModel.DataAnnotations;
 
 <PageTitle>Index</PageTitle>
 
-<h1>Hello, world!</h1>
+<div class="py-8 sm:py-10 lg:pb-10">
+    <div class="mx-auto max-w-7xl px-6 lg:px-8">
+        <div class="mx-auto max-w-2xl text-center">
+            <h1 class="text-4xl font-bold tracking-tight text-gray-900 dark:text-white sm:text-6xl">
+                <span class="font-extrabold text-transparent bg-clip-text primary-gradient">Pokerino</span>
+            </h1>
+            <p class="mt-2 text-xl font-extralight text-gray-600 dark:text-gray-400">The best scrum poker app in the galaxy</p>
+        </div>
+    </div>
+</div>
 
-Welcome to your new app.
+<div class="flex gap-4 px-4 md:px-12 lg:px-32">
+    <ActionPanel>
+        <Title>Create a room</Title>
+        <Description>
+            Host a room and invite your colleagues to play some
+            <span class="text-gradient primary-gradient pl-0.5">Pokerino</span>!
+        </Description>
+        <Body>
+            <EditForm Model="room" class="mt-5 flex flex-col space-between" OnValidSubmit="@HandleCreateRoom">
+                <div class="space-y-3">
+                    <InputTextField Label="Room Name" ShowLabel="@true" Placeholder="Enter the room name..." @bind-Value="@room.Name" />
+                    <InputTextField Label="Room ID" ShowLabel="@true" Placeholder="Enter the room ID..." @bind-Value="@room.Id" />
+                </div>
+                <Button Type="submit">
+                    <Body>
+                        Let's play some
+                        <span class="text-gradient primary-gradient pl-1">Pokerino</span>!
+                    </Body>
+                </Button>
+            </EditForm>
+        </Body>
+    </ActionPanel>
+    <ActionPanel>
+        <Title>Join a room</Title>
+        <Description>
+            Join a room rock some
+            <span class="text-gradient primary-gradient pl-0.5">Pokerino</span>!
+        </Description>
+        <Body>
+            <EditForm Model="joinRoom" class="mt-5 flex flex-col justify-between flex-grow" OnValidSubmit="@HandleJoinRoom">
+                <DataAnnotationsValidator />
+                <div class="space-y-3">
+                    <InputTextField Label="Room ID" ShowLabel="@true" Placeholder="Enter the room ID..." @bind-Value="@joinRoom.Id" />
+                    <ValidationMessage For="@(() => joinRoom.Id)" />
+                </div>
+                <Button Type="submit">
+                    <Body>
+                        Let's go!
+                    </Body>
+                </Button>
+            </EditForm>
+        </Body>
+    </ActionPanel>
+</div>
 
-<SurveyPrompt Title="How is Blazor working for you?" />
+@code
+{
+    private Pokerino.Shared.Room room = new Pokerino.Shared.Room();
+    private RoomJoinForm joinRoom = new();
+
+    public class RoomJoinForm
+    {
+        [Required(ErrorMessage = "Id is required if you want to join a room.")]
+        [StringLength(50, MinimumLength = 8, ErrorMessage = "Id must be between 8 and 50 characters.")]
+        public string? Id { get; set; }
+    }
+
+    private void HandleCreateRoom()
+    {
+
+    }
+
+    private void HandleJoinRoom()
+    {
+
+    }
+}
