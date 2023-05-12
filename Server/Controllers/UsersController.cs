@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Pokerino.Server.Services;
-using Pokerino.Server.Authorization;
 using Pokerino.Server.Models;
+using Pokerino.Server.Models.Users;
+using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Pokerino.Server.Controllers
 {
@@ -13,10 +15,12 @@ namespace Pokerino.Server.Controllers
     public class UsersController : ControllerBase
     {
         private IUserService _userService;
+        private IMapper _mapper;
 
-        public UsersController(IUserService userService)
+        public UsersController(IUserService userService, IMapper mapper)
         {
             _userService = userService;
+            _mapper = mapper;
         }
 
         [AllowAnonymous]
@@ -31,11 +35,19 @@ namespace Pokerino.Server.Controllers
             return Ok(response);
         }
 
-        [HttpGet]
+        [HttpGet("all")]
         public IActionResult GetAll()
         {
             var users = _userService.GetAll();
             return Ok(users);
+        }
+
+        [AllowAnonymous]
+        [HttpPost("create")]
+        public IActionResult Create(CreateRequest model)
+        {
+            _userService.Create(model);
+            return Ok(new { message = "User created" });
         }
     }
 }

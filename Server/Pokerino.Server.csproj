@@ -31,18 +31,14 @@
     <None Remove="Hubs\" />
     <None Remove="Helpers\" />
     <None Remove="Entities\" />
-    <None Remove="Authorization\" />
     <None Remove="Services\" />
     <None Remove="Models\" />
-    <None Remove="Models\Auth\" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Hubs\" />
     <Folder Include="Helpers\" />
     <Folder Include="Entities\" />
-    <Folder Include="Authorization\" />
     <Folder Include="Services\" />
     <Folder Include="Models\" />
-    <Folder Include="Models\Auth\" />
   </ItemGroup>
 </Project>

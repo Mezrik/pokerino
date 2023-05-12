@@ -1,6 +1,8 @@
-﻿using Pokerino.Server.Authorization;
-using Pokerino.Server.Entities;
-using Pokerino.Server.Models;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Identity;
+using Pokerino.Shared.Entities;
+using Pokerino.Server.Helpers;
+using Pokerino.Server.Models.Users;
 
 namespace Pokerino.Server.Services
 {
@@ -9,29 +11,34 @@ namespace Pokerino.Server.Services
         AuthResponse? Authenticate(AuthRequest model);
         IEnumerable<User> GetAll();
         User? GetById(int id);
+        void Create(CreateRequest model);
+        void Update(int id, UpdateRequest model);
+        void Delete(int id);
     }
 
     public class UserService : IUserService
     {
-        // users hardcoded for simplicity, store in a db with hashed passwords in production applications
-        private List<User> _users = new List<User>
-    {
-        new User { Id = 1, FirstName = "Test", LastName = "User", Username = "test", Password = "test" }
-    };
+        private DataContext _context;
+        private readonly IMapper _mapper;
 
         private readonly IJwtUtils _jwtUtils;
 
-        public UserService(IJwtUtils jwtUtils)
+        public UserService(IJwtUtils jwtUtils, DataContext context, IMapper mapper)
         {
             _jwtUtils = jwtUtils;
+            _context = context;
+            _mapper = mapper;
         }
 
         public AuthResponse? Authenticate(AuthRequest model)
         {
-            var user = _users.SingleOrDefault(x => x.Username == model.Username && x.Password == model.Password);
+            var user = _context.Users.SingleOrDefault(x => x.Username == model.Username);
 
             // return null if user not found
             if (user == null) return null;
+
+            if (model.Password is null || !PasswordHasher.VerifyPassword(model.Password, user.Password, user.PasswordSalt))
+                return null;
 
             // authentication successful so generate jwt token
             var token = _jwtUtils.GenerateJwtToken(user);
@@ -39,14 +46,73 @@ namespace Pokerino.Server.Services
             return new AuthResponse(user, token);
         }
 
-        public IEnumerable<User> GetAll()
+        public void Create(CreateRequest model)
         {
-            return _users;
+            // validate
+            if (_context.Users.Any(x => x.Email == model.Email))
+                throw new AppException("User with the email '" + model.Email + "' already exists");
+
+            if (_context.Users.Any(x => x.Username == model.Username))
+                throw new AppException("User with the username '" + model.Username + "' already exists");
+
+            // map model to new user object
+            var user = _mapper.Map<User>(model);
+
+            // hash password
+            byte[] salt;
+            user.Password = PasswordHasher.HashPassword(model.Password, out salt);
+            user.PasswordSalt = salt;
+
+            // save user
+            _context.Users.Add(user);
+            _context.SaveChanges();
         }
 
-        public User? GetById(int id)
+        public void Update(int id, UpdateRequest model)
         {
-            return _users.FirstOrDefault(x => x.Id == id);
+            var user = GetUser(id);
+
+            // validate
+            if (model.Email != user.Email && _context.Users.Any(x => x.Email == model.Email))
+                throw new AppException("User with the email '" + model.Email + "' already exists");
+
+            // hash password if it was entered
+            if (!string.IsNullOrEmpty(model.Password))
+            {
+                byte[] salt;
+                user.Password = PasswordHasher.HashPassword(model.Password, out salt);
+                user.PasswordSalt = salt;
+            }
+
+            // copy model to user and save
+            _mapper.Map(model, user);
+            _context.Users.Update(user);
+            _context.SaveChanges();
+        }
+
+        public void Delete(int id)
+        {
+            var user = GetUser(id);
+            _context.Users.Remove(user);
+            _context.SaveChanges();
+        }
+
+        public IEnumerable<User> GetAll()
+        {
+            return _context.Users;
+        }
+
+        public User GetById(int id)
+        {
+            return GetUser(id);
+        }
+
+
+        private User GetUser(int id)
+        {
+            var user = _context.Users.Find(id);
+            if (user == null) throw new KeyNotFoundException("User not found");
+            return user;
         }
     }
 }

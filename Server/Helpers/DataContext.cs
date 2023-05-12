@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Pokerino.Server.Entities;
+using Pokerino.Shared.Entities;
 
 namespace Pokerino.Server.Helpers
 {

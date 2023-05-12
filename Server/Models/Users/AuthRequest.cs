@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Pokerino.Server.Models
+namespace Pokerino.Server.Models.Users
 {
     public class AuthRequest
     {
