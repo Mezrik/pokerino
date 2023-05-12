@@ -1,4 +1,8 @@
 using Microsoft.AspNetCore.ResponseCompression;
+using Pokerino.Server.Authorization;
+using Pokerino.Server.Helpers;
+using Pokerino.Server.Hubs;
+using Pokerino.Server.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -6,6 +10,15 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
+builder.Services.AddSignalR();
+builder.Services.AddDbContext<DataContext>();
+
+// configure strongly typed settings object
+builder.Services.Configure<AppSettings>(builder.Configuration.GetSection("AppSettings"));
+
+// configure DI for application services
+builder.Services.AddScoped<IJwtUtils, JwtUtils>();
+builder.Services.AddScoped<IUserService, UserService>();
 
 var app = builder.Build();
 
@@ -28,9 +41,12 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
+// custom jwt auth middleware
+app.UseMiddleware<JwtMiddleware>();
 
 app.MapRazorPages();
 app.MapControllers();
 app.MapFallbackToFile("index.html");
+app.MapHub<RoomHub>("/roomhub");
 
 app.Run();
