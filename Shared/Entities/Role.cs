@@ -1,11 +1,11 @@
 ﻿using System;
 
-namespace Pokerino.Server.Entities
+namespace Pokerino.Shared.Entities
 {
     public enum Role
     {
-        Admin,
-        User
+        Host,
+        Guest
     }
 }
 

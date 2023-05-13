@@ -1,0 +1,10 @@
+﻿@page "/logout"
+@using Pokerino.Client.Services
+@inject IAuthenticationService AuthenticationService
+
+@code {
+    protected override async void OnInitialized()
+    {
+        await AuthenticationService.Logout();
+    }
+}

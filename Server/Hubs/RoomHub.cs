@@ -8,10 +8,12 @@ namespace Pokerino.Server.Hubs
     public class RoomHub : Hub
     {
         private readonly IUserResolverService _userResolverService;
+        private readonly IRoomService _roomService;
 
-        public RoomHub(IUserResolverService userResolverService)
+        public RoomHub(IUserResolverService userResolverService, IRoomService roomService)
         {
             _userResolverService = userResolverService;
+            _roomService = roomService;
         }
 
         [Authorize]

@@ -1,11 +1,12 @@
 ﻿using System;
+using System.Text.Json;
 using Microsoft.JSInterop;
 
 namespace Pokerino.Client.Services
 {
     public interface ICookieService
     {
-        public Task<T> GetValueAsync<T>(string key);
+        public Task<T?> GetValueAsync<T>(string key);
         public Task SetValueAsync<T>(string key, T value);
         public Task RemoveValueAsync(string key);
     }
@@ -28,18 +29,21 @@ namespace Pokerino.Client.Services
             }
         }
 
-        public async Task<T> GetValueAsync<T>(string key)
+        public async Task<T?> GetValueAsync<T>(string key)
         {
             await WaitForReference();
-            var result = await _accessorJsRef.Value.InvokeAsync<T>("get", key);
+            var json = await _accessorJsRef.Value.InvokeAsync<string>("get", key);
 
-            return result;
+            if (json == null)
+                return default;
+
+            return JsonSerializer.Deserialize<T>(json);
         }
 
         public async Task SetValueAsync<T>(string key, T value)
         {
             await WaitForReference();
-            await _accessorJsRef.Value.InvokeVoidAsync("set", key, value);
+            await _accessorJsRef.Value.InvokeVoidAsync("set", key, JsonSerializer.Serialize(value));
         }
 
         public async Task RemoveValueAsync(string key)

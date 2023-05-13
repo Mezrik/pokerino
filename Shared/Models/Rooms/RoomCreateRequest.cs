@@ -1,7 +1,7 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace Pokerino.Server.Models.Rooms
+namespace Pokerino.Shared.Models.Rooms
 {
     public class RoomCreateRequest
     {

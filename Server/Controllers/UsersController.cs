@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Pokerino.Server.Services;
-using Pokerino.Server.Models;
-using Pokerino.Server.Models.Users;
+using Pokerino.Shared.Models;
+using Pokerino.Shared.Models.Users;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 
@@ -44,7 +44,7 @@ namespace Pokerino.Server.Controllers
 
         [AllowAnonymous]
         [HttpPost("create")]
-        public IActionResult Create(CreateRequest model)
+        public IActionResult Create(UserCreateRequest model)
         {
             _userService.Create(model);
             return Ok(new { message = "User created" });

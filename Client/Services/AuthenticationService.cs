@@ -11,7 +11,7 @@ namespace Pokerino.Client.Services
     {
         AuthResponse? User { get; }
         Task Initialize();
-        Task Login(string username, string password);
+        Task<HttpResponseMessage> Login(string username, string password);
         Task Logout();
     }
 
@@ -39,7 +39,7 @@ namespace Pokerino.Client.Services
             User = await _cookieService.GetValueAsync<AuthResponse>("user");
         }
 
-        public async Task Login(string username, string password)
+        public async Task<HttpResponseMessage> Login(string username, string password)
         {
             var response = await _http.PostAsJsonAsync(
                 "/users/authenticate",
@@ -49,6 +49,8 @@ namespace Pokerino.Client.Services
             User = await response.Content.ReadFromJsonAsync<AuthResponse>();
 
             await _cookieService.SetValueAsync("user", User);
+
+            return response;
         }
 
         public async Task Logout()

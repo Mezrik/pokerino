@@ -1,7 +1,8 @@
 ﻿using System;
+using System.Text.Json.Serialization;
 using Pokerino.Shared.Entities;
 
-namespace Pokerino.Server.Models.Users
+namespace Pokerino.Shared.Models.Users
 {
     public class AuthResponse
     {
@@ -16,6 +17,15 @@ namespace Pokerino.Server.Models.Users
             Id = user.Id;
             Email = user.Email;
             Username = user.Username;
+            Token = token;
+        }
+
+        [JsonConstructorAttribute]
+        public AuthResponse(int id, string email, string username, string token)
+        {
+            Id = id;
+            Email = email;
+            Username = username;
             Token = token;
         }
     }

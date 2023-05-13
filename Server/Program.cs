@@ -10,7 +10,7 @@ using Pokerino.Shared.Entities;
 using System.Security.Claims;
 using System.IdentityModel.Tokens.Jwt;
 using Microsoft.AspNetCore.Authorization;
-using Pokerino.Server.Models.Users;
+using Pokerino.Shared.Models.Users;
 using Microsoft.Extensions.Options;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -30,6 +30,7 @@ builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 // configure DI for application services
 builder.Services.AddScoped<IJwtUtils, JwtUtils>();
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IRoomService, RoomService>();
 builder.Services.AddScoped<IUserResolverService, UserResolverService>();
 
 builder.Services.AddAuthentication(options =>
@@ -88,8 +89,7 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
-//// custom jwt auth middleware
-//app.UseMiddleware<JwtMiddleware>();
+app.UseMiddleware<ErrorHandlerMiddleware>();
 
 app.MapRazorPages();
 app.MapControllers();

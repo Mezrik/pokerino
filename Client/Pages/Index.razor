@@ -1,7 +1,9 @@
 ﻿@page "/"
 @using System.ComponentModel.DataAnnotations;
 @using Pokerino.Shared.Entities;
+@using Pokerino.Client.Services;
 @inject HttpClient Http
+@inject IAuthenticationService AuthenticationService
 
 <PageTitle>Index</PageTitle>
 
@@ -11,7 +13,13 @@
             <h1 class="text-4xl font-bold tracking-tight text-gray-900 dark:text-white sm:text-6xl">
                 <span class="font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-cyan-400">Pokerino</span>
             </h1>
-            <p class="mt-2 text-xl font-extralight text-gray-600 dark:text-gray-400">The best scrum poker app in the galaxy</p>
+            <p class="mt-2 text-xl font-extralight text-gray-600 dark:text-gray-400">
+                @if (AuthenticationService.User is not null)
+                {
+                    <span><span class="font-semibold">@AuthenticationService.User.Username</span> welcome to</span>
+                }
+                the best scrum poker app in the galaxy
+            </p>
         </div>
     </div>
 </div>
@@ -58,6 +66,22 @@
             </EditForm>
         </Body>
     </ActionPanel>
+</div>
+
+<div class="text-center text-gray-500 text-sm mt-5">
+    @if (AuthenticationService.User is null)
+    {
+        <span>
+            <NavLink href="login" class="text-blue-600">Sign in</NavLink> if you already have an account.
+            If you don't have an account <NavLink href="register" class="text-blue-600">Sign up</NavLink>!
+        </span>
+    }
+    else
+    {
+        <span>
+            <NavLink href="logout" class="text-blue-600">Log out</NavLink> 👋
+        </span>
+    }
 </div>
 
 @code

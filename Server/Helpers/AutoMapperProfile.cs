@@ -1,7 +1,8 @@
 ﻿using System;
 using AutoMapper;
 using Pokerino.Shared.Entities;
-using Pokerino.Server.Models.Users;
+using Pokerino.Shared.Models.Users;
+using Pokerino.Shared.Models.Rooms;
 
 namespace Pokerino.Server.Helpers
 {
@@ -9,11 +10,11 @@ namespace Pokerino.Server.Helpers
     {
         public AutoMapperProfile()
         {
-            // CreateRequest -> User
-            CreateMap<CreateRequest, User>();
+            // UserCreateRequest -> User
+            CreateMap<UserCreateRequest, User>();
 
-            // UpdateRequest -> User
-            CreateMap<UpdateRequest, User>()
+            // UserUpdateRequest -> User
+            CreateMap<UserUpdateRequest, User>()
                 .ForAllMembers(x => x.Condition(
                     (src, dest, prop) =>
                     {
@@ -24,6 +25,9 @@ namespace Pokerino.Server.Helpers
                         return true;
                     }
                 ));
+
+            // RoomCreateRequest -> Room
+            CreateMap<RoomCreateRequest, Room>();
         }
     }
 }

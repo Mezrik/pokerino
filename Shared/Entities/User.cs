@@ -3,7 +3,7 @@ using System.Data;
 using System.Net.NetworkInformation;
 using System.Text.Json.Serialization;
 
-namespace Pokerino.Server.Entities
+namespace Pokerino.Shared.Entities
 {
     public class User
     {

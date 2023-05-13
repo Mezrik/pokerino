@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 using Pokerino.Shared.Entities;
 using Pokerino.Server.Helpers;
-using Pokerino.Server.Models.Users;
+using Pokerino.Shared.Models.Users;
 
 namespace Pokerino.Server.Services
 {
@@ -11,8 +11,8 @@ namespace Pokerino.Server.Services
         AuthResponse? Authenticate(AuthRequest model);
         IEnumerable<User> GetAll();
         User? GetById(int id);
-        void Create(CreateRequest model);
-        void Update(int id, UpdateRequest model);
+        void Create(UserCreateRequest model);
+        void Update(int id, UserUpdateRequest model);
         void Delete(int id);
     }
 
@@ -46,7 +46,7 @@ namespace Pokerino.Server.Services
             return new AuthResponse(user, token);
         }
 
-        public void Create(CreateRequest model)
+        public void Create(UserCreateRequest model)
         {
             // validate
             if (_context.Users.Any(x => x.Email == model.Email))
@@ -68,7 +68,7 @@ namespace Pokerino.Server.Services
             _context.SaveChanges();
         }
 
-        public void Update(int id, UpdateRequest model)
+        public void Update(int id, UserUpdateRequest model)
         {
             var user = GetUser(id);
 
