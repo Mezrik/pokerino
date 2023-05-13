@@ -1,9 +1,9 @@
-/** @type {import('tailwindcss').Config} */
-module.exports = {
+tailwind.config = {
     content: [
         '!**/{bin,obj,node_modules}/**',
         '**/*.{razor,html,cshtml}',
     ],
+    darkMode: 'class',
     theme: {
         container: {
             center: true,
@@ -154,7 +154,6 @@ module.exports = {
             }
         }
     },
-    darkMode: 'class',
     plugins: [
         ({ addVariant }) => {
             [

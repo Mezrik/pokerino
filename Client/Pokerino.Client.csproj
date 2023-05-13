@@ -1,25 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk.BlazorWebAssembly">
-  <Import Project="tailwindcss.targets" />
-  <PropertyGroup>
-    <TargetFramework>net7.0</TargetFramework>
-    <Nullable>enable</Nullable>
-    <ImplicitUsings>enable</ImplicitUsings>
-  </PropertyGroup>
-
-  <PropertyGroup Condition=" '$(RunConfiguration)' == 'https' ">
-    <ExternalConsole>true</ExternalConsole>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(RunConfiguration)' == 'http' ">
-    <ExternalConsole>true</ExternalConsole>
-  </PropertyGroup>
-  <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="7.0.3" />
-    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="7.0.3" PrivateAssets="all" />
-    <PackageReference Include="Microsoft.AspNetCore.SignalR.Client" Version="7.0.5" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\Shared\Pokerino.Shared.csproj" />
-  </ItemGroup>
-
+	<PropertyGroup>
+		<TargetFramework>net7.0</TargetFramework>
+		<Nullable>enable</Nullable>
+		<ImplicitUsings>enable</ImplicitUsings>
+	</PropertyGroup>
+	<PropertyGroup Condition=" '$(RunConfiguration)' == 'https' ">
+		<ExternalConsole>true</ExternalConsole>
+	</PropertyGroup>
+	<PropertyGroup Condition=" '$(RunConfiguration)' == 'http' ">
+		<ExternalConsole>true</ExternalConsole>
+	</PropertyGroup>
+	<ItemGroup>
+		<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="7.0.3" />
+		<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="7.0.3" PrivateAssets="all" />
+		<PackageReference Include="Microsoft.AspNetCore.SignalR.Client" Version="7.0.5" />
+		<PackageReference Include="Blazorise.Tailwind" Version="1.2.3" />
+		<PackageReference Include="Blazorise.Icons.FontAwesome" Version="1.2.3" />
+	</ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\Shared\Pokerino.Shared.csproj" />
+	</ItemGroup>
+	<ItemGroup>
+		<None Remove="Shared\Forms\" />
+		<None Remove="Helpers\" />
+		<None Remove="Services\" />
+	</ItemGroup>
+	<ItemGroup>
+		<Folder Include="Shared\Forms\" />
+		<Folder Include="wwwroot\js\" />
+		<Folder Include="Helpers\" />
+		<Folder Include="Services\" />
+	</ItemGroup>
+	<ItemGroup>
+		<Content Remove="wwwroot\js\" />
+		<Content Remove="wwwroot\js\tailwind.config.js" />
+	</ItemGroup>
+	<ItemGroup>
+		<None Include="wwwroot\js\tailwind.config.js" />
+	</ItemGroup>
 </Project>
