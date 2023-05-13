@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Pokerino.Server.Models.Users
 {
-    public class CreateRequest
+    public class UserCreateRequest
     {
         [Required]
         public string Username { get; set; }

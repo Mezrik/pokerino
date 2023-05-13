@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Pokerino.Server.Models.Users
 {
-    public class UpdateRequest
+    public class UserUpdateRequest
     {
         public string Title { get; set; }
         public string FirstName { get; set; }
