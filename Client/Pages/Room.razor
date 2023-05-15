@@ -6,6 +6,7 @@
 @using Microsoft.AspNetCore.SignalR.Client
 @inject IAuthenticationService AuthenticationService
 @inject NavigationManager Navigation
+@inject IJSRuntime JSRuntime
 @implements IAsyncDisposable
 @layout SimpleLayout
 
@@ -13,7 +14,12 @@
 
 @if (_room is not null)
 {
-    <h1 class="font-extralight text-2xl text-gray-400 mb-8">@_room.Name</h1>
+    <div class="flex gap-4 mb-8">
+        <h1 class="font-extralight text-2xl text-gray-400">@_room.Name</h1>
+        <Button Color="Color.Light" Size="Size.ExtraSmall" Clicked="@CopyTextToClipboard">
+            <Icon Name="Blazorise.Icons.FontAwesome.FontAwesomeIcons.Copy" />
+        </Button>
+    </div>
 
     <div class="flex gap-4 flex-grow">
         <div class="w-96 space-y-4 flex flex-col">
@@ -312,6 +318,11 @@
             await hubConnection.SendAsync("SelectRoomTopic", int.Parse(topicId));
             _selectedItem = topicId;
         }
+    }
+
+    private async Task CopyTextToClipboard()
+    {
+        await JSRuntime.InvokeVoidAsync("clipboardCopy.copyText", Navigation.Uri);
     }
 
     private async Task<HubConnection>

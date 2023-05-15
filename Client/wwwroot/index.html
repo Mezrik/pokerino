@@ -37,6 +37,11 @@
     </div>
     <script src="https://unpkg.com/flowbite@1.5.4/dist/flowbite.js"></script>
     <script src="_framework/blazor.webassembly.js"></script>
+    <script>window.clipboardCopy = {
+            copyText: function (text) {
+                navigator.clipboard.writeText(text);
+            }
+        };</script>
 </body>
 
 </html>
