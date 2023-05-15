@@ -20,7 +20,7 @@
                         <FieldLabel>Username</FieldLabel>
                         <TextEdit Placeholder="Enter the Username..." @bind-Text="@username">
                             <Feedback>
-                                <ValidationError />
+                                <ValidationError>Username is required.</ValidationError>
                             </Feedback>
                         </TextEdit>
                     </Field>
@@ -30,7 +30,7 @@
                         <FieldLabel>Password</FieldLabel>
                         <TextEdit Placeholder="Enter the Password..." Role="TextRole.Password" @bind-Text="@password">
                             <Feedback>
-                                <ValidationError />
+                                <ValidationError>Password is required.</ValidationError>
                             </Feedback>
                         </TextEdit>
                     </Field>

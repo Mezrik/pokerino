@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.Reflection.Metadata;
+using Microsoft.EntityFrameworkCore;
 using Pokerino.Shared.Entities;
 
 namespace Pokerino.Server.Helpers
@@ -23,6 +24,10 @@ namespace Pokerino.Server.Helpers
         public DbSet<Room> Rooms { get; set; }
 
         public DbSet<RoomUser> RoomUser { get; set; }
+
+        public DbSet<RoomTopic> RoomTopic { get; set; }
+
+        public DbSet<EstimateVote> EstimateVote { get; set; }
     }
 }
 

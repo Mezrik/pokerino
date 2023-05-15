@@ -1,0 +1,42 @@
+﻿<Validations @ref="@validationsRef"
+             Mode="ValidationMode.Manual"
+             ValidateOnLoad="false">
+    <div class="space-y-3">
+        <Validation Validator="ValidationRule.IsNotEmpty">
+            <Field>
+                <FieldLabel>Username</FieldLabel>
+                <TextEdit Placeholder="Enter the Username..." @bind-Text="@username">
+                    <Feedback>
+                        <ValidationError />
+                    </Feedback>
+                </TextEdit>
+            </Field>
+        </Validation>
+    </div>
+
+    <Field Class="mt-4">
+        <Blazorise.Button Color="Color.Primary" Clicked="@HandleSubmit">
+            Sign in! 🚀
+        </Blazorise.Button>
+    </Field>
+</Validations>
+
+@code {
+    Validations validationsRef;
+    private string username;
+
+    [Parameter, EditorRequired]
+    public Action<string> OnSubmit { get; set; }
+
+    private async void HandleSubmit()
+    {
+        if (await validationsRef.ValidateAll())
+        {
+            if (OnSubmit is not null) OnSubmit(username);
+
+            await validationsRef.ClearAll();
+        }
+    }
+
+}
+

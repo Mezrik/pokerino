@@ -12,8 +12,8 @@ using Pokerino.Server.Helpers;
 namespace Pokerino.Server.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20230513084125_AddRooms")]
-    partial class AddRooms
+    [Migration("20230514185641_AddRoomRoomUserRelationship2")]
+    partial class AddRoomRoomUserRelationship2
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -33,9 +33,6 @@ namespace Pokerino.Server.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("HostId")
-                        .HasColumnType("integer");
-
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("text");
@@ -48,8 +45,6 @@ namespace Pokerino.Server.Migrations
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("HostId");
 
                     b.ToTable("Rooms");
                 });
@@ -91,13 +86,16 @@ namespace Pokerino.Server.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
+                    b.Property<string>("Name")
+                        .HasColumnType("text");
+
                     b.Property<int>("Role")
                         .HasColumnType("integer");
 
-                    b.Property<int?>("RoomId")
+                    b.Property<int>("RoomId")
                         .HasColumnType("integer");
 
-                    b.Property<int>("UserId")
+                    b.Property<int?>("UserId")
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
@@ -138,17 +136,6 @@ namespace Pokerino.Server.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("Pokerino.Shared.Entities.Room", b =>
-                {
-                    b.HasOne("Pokerino.Shared.Entities.RoomUser", "Host")
-                        .WithMany()
-                        .HasForeignKey("HostId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Host");
-                });
-
             modelBuilder.Entity("Pokerino.Shared.Entities.RoomTopic", b =>
                 {
                     b.HasOne("Pokerino.Shared.Entities.Room", null)
@@ -159,23 +146,23 @@ namespace Pokerino.Server.Migrations
             modelBuilder.Entity("Pokerino.Shared.Entities.RoomUser", b =>
                 {
                     b.HasOne("Pokerino.Shared.Entities.Room", null)
-                        .WithMany("Users")
-                        .HasForeignKey("RoomId");
+                        .WithMany("RoomUsers")
+                        .HasForeignKey("RoomId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("Pokerino.Shared.Entities.User", "User")
                         .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("UserId");
 
                     b.Navigation("User");
                 });
 
             modelBuilder.Entity("Pokerino.Shared.Entities.Room", b =>
                 {
-                    b.Navigation("Topics");
+                    b.Navigation("RoomUsers");
 
-                    b.Navigation("Users");
+                    b.Navigation("Topics");
                 });
 #pragma warning restore 612, 618
         }

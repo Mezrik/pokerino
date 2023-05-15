@@ -1,0 +1,67 @@
+﻿@using Pokerino.Client.Services
+@inject IRoomService RoomService
+
+<Validations @ref="@validationsRef"
+             Mode="ValidationMode.Manual"
+             ValidateOnLoad="false">
+    <div class="space-y-3 flex-grow">
+        <Validation AsyncValidator="@ValidateJoinRoomIdAsync">
+            <Field>
+                <FieldLabel>Room ID</FieldLabel>
+                <TextEdit Placeholder="Enter the room ID..." @bind-Text="@publicId">
+                    <Feedback>
+                        <ValidationError>Enter valid room ID (entered ID probably does not exist).</ValidationError>
+                    </Feedback>
+                </TextEdit>
+            </Field>
+        </Validation>
+    </div>
+
+    <Field Class="mt-4">
+        <Blazorise.Button Color="Color.Primary" Clicked="@HandleSubmit">
+            Let's go! 🚀
+        </Blazorise.Button>
+    </Field>
+
+</Validations>
+
+@code {
+    Validations validationsRef;
+    private string publicId;
+
+    [Parameter, EditorRequired]
+    public Action<string> OnSubmit { get; set; }
+
+    public async void HandleSubmit()
+    {
+        if (await validationsRef.ValidateAll())
+        {
+            if (OnSubmit is not null) OnSubmit(publicId);
+
+            await validationsRef.ClearAll();
+        }
+    }
+
+    public async Task ValidateJoinRoomIdAsync(ValidatorEventArgs e, CancellationToken cancellationToken)
+    {
+        cancellationToken.ThrowIfCancellationRequested();
+
+        if (e.Value?.ToString() is null)
+        {
+            e.Status = ValidationStatus.Error;
+        }
+        else
+        {
+            try
+            {
+                await RoomService.CheckIfExists(e.Value.ToString()!);
+                e.Status = ValidationStatus.Success;
+            }
+            catch (Exception error)
+            {
+                e.Status = ValidationStatus.Error;
+            }
+        }
+    }
+}
+

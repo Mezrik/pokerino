@@ -1,0 +1,42 @@
+﻿@page "/anonymous-login"
+@page "/anonymous-login/{PrevPage}"
+
+@using Pokerino.Client.Services
+@inject IAuthenticationService AuthenticationService
+@inject NavigationManager NavigationManager
+
+<Card>
+    <CardBody>
+        <CardTitle Class="dark:text-white text-gray-700 mb-5 text-xl">
+            Choose your username
+        </CardTitle>
+        <CreateAnonymousUserForm OnSubmit="@HandleAnonymousUsername" />
+    </CardBody>
+</Card>
+
+@code {
+    [Parameter]
+    public string? PrevPage { get; set; }
+
+    protected override void OnInitialized()
+    {
+        // redirect to home if already logged in
+        if (AuthenticationService.User != null)
+        {
+            NavigationManager.NavigateTo("");
+        }
+    }
+
+    public async void HandleAnonymousUsername(string username)
+    {
+        await AuthenticationService.AnonymousLogin(username);
+
+        if (PrevPage is not null)
+        {
+            var route = System.Net.WebUtility.UrlDecode(PrevPage);
+            NavigationManager.NavigateTo(route);
+        }
+        else NavigationManager.NavigateTo("");
+    }
+}
+

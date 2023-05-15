@@ -1,9 +1,12 @@
 ﻿@page "/"
 @using System.ComponentModel.DataAnnotations;
 @using Pokerino.Shared.Entities;
+@using Pokerino.Shared.Models.Rooms;
 @using Pokerino.Client.Services;
-@inject HttpClient Http
 @inject IAuthenticationService AuthenticationService
+@inject IRoomService RoomService
+@inject INotificationService NotificationService
+@inject NavigationManager NavigationManager
 
 <PageTitle>Index</PageTitle>
 
@@ -24,48 +27,69 @@
     </div>
 </div>
 
-<div class="flex gap-4 px-4 md:px-12 lg:px-32">
-    <ActionPanel>
-        <Title>Create a room</Title>
-        <Description>
-            Host a room and invite your colleagues to play some
-            <span class="font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-cyan-400 pl-0.5">Pokerino</span>!
-        </Description>
-        <Body>
-            <EditForm Model="room" class="mt-5 flex flex-col space-between" OnValidSubmit="@HandleCreateRoom">
-                <div class="space-y-3">
-                    <InputTextField Label="Room Name" ShowLabel="@true" Placeholder="Enter the room name..." @bind-Value="@room.Name" />
-                    <InputTextField Label="Room ID" ShowLabel="@true" Placeholder="Enter the room ID..." @bind-Value="@room.PublicId" />
+<div class="flex flex-col gap-4 px-4 md:px-12 lg:px-32">
+    <div class="flex gap-4">
+        <Card Class="flex-1">
+            <CardBody Class="flex flex-col h-full">
+                <CardTitle Class="dark:text-white text-gray-700 mb-2 text-xl">
+                    Create a room
+                </CardTitle>
+                <CardText Class="dark:text-gray-400">
+                    Host a room and invite your colleagues to play some
+                    <span class="font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-cyan-400 pl-0.5">Pokerino</span>!
+                </CardText>
+                <div Class="flex flex-col space-between h-full">
+                    <CreateRoomForm OnSubmit="@HandleCreateRoom" />
                 </div>
-                <Field Class="mt-4">
-                    <Blazorise.Button Type="ButtonType.Submit" Color="Color.Primary">
-                        Let's play some
-                        <span class="font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-cyan-400 pl-1">Pokerino</span>!
-                    </Blazorise.Button>
-                </Field>
-            </EditForm>
-        </Body>
-    </ActionPanel>
-    <ActionPanel>
-        <Title>Join a room</Title>
-        <Description>
-            Join a room and rock some
-            <span class="font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-cyan-400 pl-0.5">Pokerino</span>!
-        </Description>
-        <Body>
-            <EditForm Model="joinRoom" class="mt-5 flex flex-col justify-between flex-grow" OnValidSubmit="@HandleJoinRoom">
-                <DataAnnotationsValidator />
-                <div class="space-y-3">
-                    <InputTextField Label="Room ID" ShowLabel="@true" Placeholder="Enter the room ID..." @bind-Value="@joinRoom.Id" />
+            </CardBody>
+        </Card>
+        <Card Class="flex-1">
+            <CardBody Class="flex flex-col h-full">
+                <CardTitle Class="dark:text-white text-gray-700 mb-2 text-xl">
+                    Join a room
+                </CardTitle>
+                <CardText Class="dark:text-gray-400">
+                    Join a room and rock some
+                    <span class="font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-cyan-400 pl-0.5">Pokerino</span>!
+                </CardText>
+                <div Class="flex flex-col space-between h-full">
+                    <JoinRoomForm OnSubmit="@HandleJoinRoom" />
                 </div>
-                <Field Class="mt-4">
-                    <Blazorise.Button Type="ButtonType.Submit" Color="Color.Primary">
-                        Let's go!
-                    </Blazorise.Button>
-                </Field>
-            </EditForm>
-        </Body>
-    </ActionPanel>
+            </CardBody>
+        </Card>
+    </div>
+    @if (_userRooms is not null)
+    {
+        <div class="space-y-2">
+            <div class="flex gap-4 justify-center">
+                <div class="p-5">
+                    <h3 class="text-center text-xl font-extrabold text-gray-600 dark:text-white">
+                        Your<br />rooms
+                    </h3>
+                </div>
+                @foreach (var room in _userRooms.Take(4))
+                {
+                    <Card Class="flex-grow text-gray-600 dark:text-white">
+                        <CardBody Class="flex flex-col h-full">
+                            <CardTitle Class="flex justify-between">
+                                <span class="text-base font-medium">@room.Name</span>
+                                <span class="text-base font-extralight">@room.PublicId</span>
+                            </CardTitle>
+                            <div>
+                                @if (room.Status != RoomStatus.Finished)
+                                {
+                                    <Button Color="Color.Primary" Size="Size.ExtraSmall"
+                                            Clicked="@(() => NavigationManager.NavigateTo($"/room/{room.PublicId}"))">
+                                        Join Room
+                                    </Button>
+                                }
+                            </div>
+                        </CardBody>
+                    </Card>
+                }
+            </div>
+        </div>
+    }
 </div>
 
 <div class="text-center text-gray-500 text-sm mt-5">
@@ -86,23 +110,33 @@
 
 @code
 {
-    private Pokerino.Shared.Entities.Room room = new Pokerino.Shared.Entities.Room();
-    private RoomJoinForm joinRoom = new();
+    private List<Pokerino.Shared.Entities.Room>? _userRooms;
 
-    public class RoomJoinForm
+    protected override async Task OnInitializedAsync()
     {
-        [Required(ErrorMessage = "Id is required if you want to join a room.")]
-        [StringLength(50, MinimumLength = 8, ErrorMessage = "Id must be between 8 and 50 characters.")]
-        public string? Id { get; set; }
+        if (AuthenticationService.User is not null)
+        {
+            _userRooms = await RoomService.GetAllUserRooms(AuthenticationService.User.Id);
+        }
     }
 
-    private void HandleCreateRoom()
+    private async void HandleCreateRoom(RoomCreateRequest room)
     {
+        if (AuthenticationService.User is null && AuthenticationService.AnonymousUser is null)
+        {
+            await AuthenticationService.AnonymousLogin(room.Username!);
+        }
 
+        var response = await RoomService.CreateRoom(room);
+        var newRoom = await response.Content.ReadFromJsonAsync<Pokerino.Shared.Entities.Room>();
+
+        if (newRoom is not null)
+            NavigationManager.NavigateTo($"/room/{newRoom.PublicId}");
+        else NotificationService.Error("Failed to create new room 😔");
     }
 
-    private void HandleJoinRoom()
+    private void HandleJoinRoom(string publicId)
     {
-
+        NavigationManager.NavigateTo($"/room/{publicId}");
     }
 }

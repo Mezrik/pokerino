@@ -1,9 +1,18 @@
 ﻿@inherits LayoutComponentBase
 
-<div class="page h-screen font-sans">
-    <main class="bg-gray-100 dark:bg-gray-900 h-full">
-        <article class="content px-4 relative">
-            @Body
-        </article>
-    </main>
-</div>
+<Layout>
+    <div class="page dark h-screen font-sans">
+        <div class="bg-gray-100 dark:bg-gray-900 h-full flex flex-col">
+            <LayoutHeader Class="px-6 py-4 flex">
+                <NavLink href="/">
+                    <h1 class="text-2xl font-bold tracking-tight text-gray-900 dark:text-white sm:text-3xl text-center">
+                        <span class="font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-cyan-400">Pokerino</span>
+                    </h1>
+                </NavLink>
+            </LayoutHeader>
+            <main class="content px-6 py-2 pb-6 flex-grow relative flex flex-col">
+                @Body
+            </main>
+        </div>
+    </div>
+</Layout>

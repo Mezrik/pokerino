@@ -32,6 +32,20 @@ namespace Pokerino.Server.Controllers
 
             return Ok(room);
         }
+
+        [AllowAnonymous]
+        [HttpGet("{publicId}/exists")]
+        public IActionResult Exists(string publicId)
+        {
+            return Ok(_roomService.CheckIfRoomExists(publicId));
+        }
+
+        [HttpGet("user/{userId}")]
+        public IActionResult GetAllRoomsForUser(int userId)
+        {
+            var test = _roomService.GetAllRoomsForUser(userId);
+            return Ok(test);
+        }
     }
 }
 

@@ -28,6 +28,9 @@ namespace Pokerino.Server.Helpers
 
             // RoomCreateRequest -> Room
             CreateMap<RoomCreateRequest, Room>();
+
+            // TopicCreateRequest -> RoomTopic
+            CreateMap<TopicCreateRequest, RoomTopic>();
         }
     }
 }

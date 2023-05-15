@@ -57,7 +57,7 @@ builder.Services.AddAuthentication(options =>
             // If the request is for our hub...
             var path = context.HttpContext.Request.Path;
             if (!string.IsNullOrEmpty(accessToken) &&
-                (path.StartsWithSegments("/hubs/chat")))
+                (path.StartsWithSegments("/hubs")))
             {
                 // Read the token out of the query string
                 context.Token = accessToken;
@@ -94,7 +94,7 @@ app.UseMiddleware<ErrorHandlerMiddleware>();
 app.MapRazorPages();
 app.MapControllers();
 app.MapFallbackToFile("index.html");
-app.MapHub<RoomHub>("/roomhub");
+app.MapHub<RoomHub>("/hubs/room");
 
 app.UseAuthentication();
 app.UseAuthorization();

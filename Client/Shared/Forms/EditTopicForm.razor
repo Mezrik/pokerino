@@ -1,0 +1,60 @@
+﻿@using Pokerino.Shared.Models.Rooms
+
+<Validations @ref="@validationsRef"
+             Mode="ValidationMode.Manual"
+             ValidateOnLoad="false"
+             Model="@topic">
+    <div class="space-y-3">
+        <Validation Validator="ValidationRule.IsNotEmpty">
+            <Field>
+                <FieldLabel>Topic Name</FieldLabel>
+                <TextEdit Placeholder="Enter the topic name..." @bind-Text="@topic.Name">
+                    <Feedback>
+                        <ValidationError>Topic Name is required.</ValidationError>
+                    </Feedback>
+                </TextEdit>
+            </Field>
+        </Validation>
+        <Field>
+            <FieldLabel>Topic Description</FieldLabel>
+            <TextEdit Placeholder="Enter the topic description..." @bind-Text="@topic.Description" />
+        </Field>
+    </div>
+
+    <Field Class="mt-4">
+        <Blazorise.Button Color="Color.Primary" Clicked="@HandleSubmit">
+            Edit Topic
+        </Blazorise.Button>
+    </Field>
+</Validations>
+
+@code {
+    Validations validationsRef;
+
+    [Parameter]
+    public string TopicName { get; set; }
+    [Parameter]
+    public string TopicDescription { get; set; }
+
+    public TopicUpdateRequest topic = new();
+
+    [Parameter, EditorRequired]
+    public Action<TopicUpdateRequest> OnSubmit { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        topic.Name = TopicName;
+        topic.Description = TopicDescription;
+    }
+
+    private async void HandleSubmit()
+    {
+        if (await validationsRef.ValidateAll())
+        {
+            if (OnSubmit is not null) OnSubmit(topic);
+
+            await validationsRef.ClearAll();
+        }
+    }
+}
+

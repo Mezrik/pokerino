@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using Pokerino.Server.Helpers;
@@ -11,9 +12,11 @@ using Pokerino.Server.Helpers;
 namespace Pokerino.Server.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20230514184006_AddRoomRoomUserRelationship")]
+    partial class AddRoomRoomUserRelationship
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -22,31 +25,6 @@ namespace Pokerino.Server.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("Pokerino.Shared.Entities.EstimateVote", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("Estimate")
-                        .HasColumnType("integer");
-
-                    b.Property<int?>("RoomTopicId")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("Username")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("RoomTopicId");
-
-                    b.ToTable("EstimateVote");
-                });
-
             modelBuilder.Entity("Pokerino.Shared.Entities.Room", b =>
                 {
                     b.Property<int>("Id")
@@ -54,9 +32,6 @@ namespace Pokerino.Server.Migrations
                         .HasColumnType("integer");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<int?>("ActiveTopicId")
-                        .HasColumnType("integer");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -70,8 +45,6 @@ namespace Pokerino.Server.Migrations
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("ActiveTopicId");
 
                     b.ToTable("Rooms");
                 });
@@ -97,9 +70,6 @@ namespace Pokerino.Server.Migrations
 
                     b.Property<int?>("RoomId")
                         .HasColumnType("integer");
-
-                    b.Property<bool>("ShowVotes")
-                        .HasColumnType("boolean");
 
                     b.HasKey("Id");
 
@@ -166,22 +136,6 @@ namespace Pokerino.Server.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("Pokerino.Shared.Entities.EstimateVote", b =>
-                {
-                    b.HasOne("Pokerino.Shared.Entities.RoomTopic", null)
-                        .WithMany("Votes")
-                        .HasForeignKey("RoomTopicId");
-                });
-
-            modelBuilder.Entity("Pokerino.Shared.Entities.Room", b =>
-                {
-                    b.HasOne("Pokerino.Shared.Entities.RoomTopic", "ActiveTopic")
-                        .WithMany()
-                        .HasForeignKey("ActiveTopicId");
-
-                    b.Navigation("ActiveTopic");
-                });
-
             modelBuilder.Entity("Pokerino.Shared.Entities.RoomTopic", b =>
                 {
                     b.HasOne("Pokerino.Shared.Entities.Room", null)
@@ -191,7 +145,7 @@ namespace Pokerino.Server.Migrations
 
             modelBuilder.Entity("Pokerino.Shared.Entities.RoomUser", b =>
                 {
-                    b.HasOne("Pokerino.Shared.Entities.Room", null)
+                    b.HasOne("Pokerino.Shared.Entities.Room", "Room")
                         .WithMany("RoomUsers")
                         .HasForeignKey("RoomId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -201,6 +155,8 @@ namespace Pokerino.Server.Migrations
                         .WithMany()
                         .HasForeignKey("UserId");
 
+                    b.Navigation("Room");
+
                     b.Navigation("User");
                 });
 
@@ -209,11 +165,6 @@ namespace Pokerino.Server.Migrations
                     b.Navigation("RoomUsers");
 
                     b.Navigation("Topics");
-                });
-
-            modelBuilder.Entity("Pokerino.Shared.Entities.RoomTopic", b =>
-                {
-                    b.Navigation("Votes");
                 });
 #pragma warning restore 612, 618
         }
