@@ -140,15 +140,6 @@ namespace Pokerino.Server.Hubs
             await Clients.Groups(room.PublicId).SendAsync("RoomStateChange", JsonSerializer.Serialize(room));
         }
 
-        //public override async Task OnConnectedAsync()
-        //{
-        //    string name = Context.User.Identity.Name;
-
-        //    _connections.Add(name, Context.ConnectionId);
-
-        //    await base.OnConnectedAsync();
-        //}
-
         public override async Task OnDisconnectedAsync(Exception? exception)
         {
             var connData = _connections.GetConnectionData(Context.ConnectionId);
@@ -161,18 +152,6 @@ namespace Pokerino.Server.Hubs
 
             await base.OnDisconnectedAsync(exception);
         }
-
-        //public override Task OnReconnected()
-        //{
-        //    string name = Context.User.Identity.Name;
-
-        //    if (!_connections.GetConnections(name).Contains(Context.ConnectionId))
-        //    {
-        //        _connections.Add(name, Context.ConnectionId);
-        //    }
-
-        //    return base.OnReconnected();
-        //}
     }
 }
 

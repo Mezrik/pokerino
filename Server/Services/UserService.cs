@@ -34,13 +34,11 @@ namespace Pokerino.Server.Services
         {
             var user = _context.Users.SingleOrDefault(x => x.Username == model.Username);
 
-            // return null if user not found
             if (user == null) return null;
 
             if (model.Password is null || !PasswordHasher.VerifyPassword(model.Password, user.Password, user.PasswordSalt))
                 return null;
 
-            // authentication successful so generate jwt token
             var token = _jwtUtils.GenerateJwtToken(user);
 
             return new AuthResponse(user, token);
@@ -48,22 +46,18 @@ namespace Pokerino.Server.Services
 
         public void Create(UserCreateRequest model)
         {
-            // validate
             if (_context.Users.Any(x => x.Email == model.Email))
                 throw new AppException("User with the email '" + model.Email + "' already exists");
 
             if (_context.Users.Any(x => x.Username == model.Username))
                 throw new AppException("User with the username '" + model.Username + "' already exists");
 
-            // map model to new user object
             var user = _mapper.Map<User>(model);
 
-            // hash password
             byte[] salt;
             user.Password = PasswordHasher.HashPassword(model.Password, out salt);
             user.PasswordSalt = salt;
 
-            // save user
             _context.Users.Add(user);
             _context.SaveChanges();
         }
@@ -72,11 +66,9 @@ namespace Pokerino.Server.Services
         {
             var user = GetUser(id);
 
-            // validate
             if (model.Email != user.Email && _context.Users.Any(x => x.Email == model.Email))
                 throw new AppException("User with the email '" + model.Email + "' already exists");
 
-            // hash password if it was entered
             if (!string.IsNullOrEmpty(model.Password))
             {
                 byte[] salt;
@@ -84,7 +76,6 @@ namespace Pokerino.Server.Services
                 user.PasswordSalt = salt;
             }
 
-            // copy model to user and save
             _mapper.Map(model, user);
             _context.Users.Update(user);
             _context.SaveChanges();

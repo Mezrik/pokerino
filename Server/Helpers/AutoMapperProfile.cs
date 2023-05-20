@@ -10,10 +10,8 @@ namespace Pokerino.Server.Helpers
     {
         public AutoMapperProfile()
         {
-            // UserCreateRequest -> User
             CreateMap<UserCreateRequest, User>();
 
-            // UserUpdateRequest -> User
             CreateMap<UserUpdateRequest, User>()
                 .ForAllMembers(x => x.Condition(
                     (src, dest, prop) =>
@@ -26,10 +24,8 @@ namespace Pokerino.Server.Helpers
                     }
                 ));
 
-            // RoomCreateRequest -> Room
             CreateMap<RoomCreateRequest, Room>();
 
-            // TopicCreateRequest -> RoomTopic
             CreateMap<TopicCreateRequest, RoomTopic>();
         }
     }

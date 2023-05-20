@@ -4,13 +4,14 @@ VisualStudioVersion = 16.0.0.0
 MinimumVisualStudioVersion = 16.0.0.0
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pokerino.Server", "Server\Pokerino.Server.csproj", "{F013701D-C608-4C78-9FC9-A856FD5467BD}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pokerino.Client", "Client\Pokerino.Client.csproj", "{71869B98-D268-4561-BE64-FA145C3DA7F5}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pokerino.Client", "Client\Pokerino.Client.csproj", "{71869B98-D268-4561-BE64-FA145C3DA7F5}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pokerino.Shared", "Shared\Pokerino.Shared.csproj", "{4CF5D14B-75C0-406B-BF54-4C927F04646F}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{DA055DA9-2C27-498E-B41E-F5922F836485}"
 	ProjectSection(SolutionItems) = preProject
 		.gitignore = .gitignore
+		README.md = README.md
 	EndProjectSection
 EndProject
 Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{9F00F353-5E81-4113-ABC8-0765C99A0D30}"

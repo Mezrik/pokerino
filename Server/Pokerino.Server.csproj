@@ -32,14 +32,12 @@
   <ItemGroup>
     <None Remove="Hubs\" />
     <None Remove="Helpers\" />
-    <None Remove="Entities\" />
     <None Remove="Services\" />
     <None Remove="Migrations\" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Hubs\" />
     <Folder Include="Helpers\" />
-    <Folder Include="Entities\" />
     <Folder Include="Services\" />
     <Folder Include="Migrations\" />
   </ItemGroup>
