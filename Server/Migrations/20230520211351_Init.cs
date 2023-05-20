@@ -6,26 +6,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Pokerino.Server.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialCreate : Migration
+    public partial class Init : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.CreateTable(
-                name: "Rooms",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    PublicId = table.Column<string>(type: "text", nullable: false),
-                    Name = table.Column<string>(type: "text", nullable: false),
-                    Status = table.Column<int>(type: "integer", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Rooms", x => x.Id);
-                });
-
             migrationBuilder.CreateTable(
                 name: "Users",
                 columns: table => new
@@ -43,6 +28,37 @@ namespace Pokerino.Server.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "EstimateVote",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Username = table.Column<string>(type: "text", nullable: false),
+                    Estimate = table.Column<int>(type: "integer", nullable: false),
+                    RoomTopicId = table.Column<int>(type: "integer", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_EstimateVote", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Rooms",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    PublicId = table.Column<string>(type: "text", nullable: false),
+                    Name = table.Column<string>(type: "text", nullable: false),
+                    Status = table.Column<int>(type: "integer", nullable: false),
+                    ActiveTopicId = table.Column<int>(type: "integer", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Rooms", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "RoomTopic",
                 columns: table => new
                 {
@@ -50,6 +66,7 @@ namespace Pokerino.Server.Migrations
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     Name = table.Column<string>(type: "text", nullable: false),
                     Description = table.Column<string>(type: "text", nullable: false),
+                    ShowVotes = table.Column<bool>(type: "boolean", nullable: false),
                     Estimate = table.Column<double>(type: "double precision", nullable: true),
                     RoomId = table.Column<int>(type: "integer", nullable: true)
                 },
@@ -91,6 +108,16 @@ namespace Pokerino.Server.Migrations
                 });
 
             migrationBuilder.CreateIndex(
+                name: "IX_EstimateVote_RoomTopicId",
+                table: "EstimateVote",
+                column: "RoomTopicId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Rooms_ActiveTopicId",
+                table: "Rooms",
+                column: "ActiveTopicId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_RoomTopic_RoomId",
                 table: "RoomTopic",
                 column: "RoomId");
@@ -104,22 +131,43 @@ namespace Pokerino.Server.Migrations
                 name: "IX_RoomUser_UserId",
                 table: "RoomUser",
                 column: "UserId");
+
+            migrationBuilder.AddForeignKey(
+                name: "FK_EstimateVote_RoomTopic_RoomTopicId",
+                table: "EstimateVote",
+                column: "RoomTopicId",
+                principalTable: "RoomTopic",
+                principalColumn: "Id");
+
+            migrationBuilder.AddForeignKey(
+                name: "FK_Rooms_RoomTopic_ActiveTopicId",
+                table: "Rooms",
+                column: "ActiveTopicId",
+                principalTable: "RoomTopic",
+                principalColumn: "Id");
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropForeignKey(
+                name: "FK_Rooms_RoomTopic_ActiveTopicId",
+                table: "Rooms");
+
             migrationBuilder.DropTable(
-                name: "RoomTopic");
+                name: "EstimateVote");
 
             migrationBuilder.DropTable(
                 name: "RoomUser");
 
             migrationBuilder.DropTable(
-                name: "Rooms");
+                name: "Users");
 
             migrationBuilder.DropTable(
-                name: "Users");
+                name: "RoomTopic");
+
+            migrationBuilder.DropTable(
+                name: "Rooms");
         }
     }
 }

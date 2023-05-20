@@ -4,6 +4,8 @@
     <TargetFramework>net7.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <DockerComposeProjectPath>../docker-compose.dcproj</DockerComposeProjectPath>
+    <UserSecretsId>00e5e1a5-d523-4a69-b646-cfb401116d79</UserSecretsId>
   </PropertyGroup>
 
   <PropertyGroup Condition=" '$(RunConfiguration)' == 'https' " />
@@ -32,11 +34,13 @@
     <None Remove="Helpers\" />
     <None Remove="Entities\" />
     <None Remove="Services\" />
+    <None Remove="Migrations\" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Hubs\" />
     <Folder Include="Helpers\" />
     <Folder Include="Entities\" />
     <Folder Include="Services\" />
+    <Folder Include="Migrations\" />
   </ItemGroup>
 </Project>

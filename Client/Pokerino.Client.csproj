@@ -4,6 +4,8 @@
 		<TargetFramework>net7.0</TargetFramework>
 		<Nullable>enable</Nullable>
 		<ImplicitUsings>enable</ImplicitUsings>
+		<DockerComposeProjectPath>../docker-compose.dcproj</DockerComposeProjectPath>
+		<UserSecretsId>71df2a09-162e-4371-8e18-6b4ea4a7677c</UserSecretsId>
 	</PropertyGroup>
 	<PropertyGroup Condition=" '$(RunConfiguration)' == 'https' ">
 		<ExternalConsole>true</ExternalConsole>
@@ -29,15 +31,10 @@
 	</ItemGroup>
 	<ItemGroup>
 		<Folder Include="Shared\Forms\" />
-		<Folder Include="wwwroot\js\" />
 		<Folder Include="Helpers\" />
 		<Folder Include="Services\" />
 	</ItemGroup>
 	<ItemGroup>
-		<Content Remove="wwwroot\js\" />
-		<Content Remove="wwwroot\js\tailwind.config.js" />
-	</ItemGroup>
-	<ItemGroup>
-		<None Include="wwwroot\js\tailwind.config.js" />
+		<None Include="wwwroot\*" />
 	</ItemGroup>
 </Project>
