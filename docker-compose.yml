@@ -12,6 +12,8 @@ services:
     build:
       context: .
       dockerfile: Server/Dockerfile
+    environment:
+      - ConnectionString=Host=pokerino.db; Database=martinpetr; Username=admin_user; Include Error Detail=True; Password=postgres;
     networks:
       - dev
 
