@@ -15,7 +15,7 @@ namespace Pokerino.Server.Helpers
 
         protected override void OnConfiguring(DbContextOptionsBuilder options)
         {
-            options.UseNpgsql(Configuration.GetConnectionString("WebApiDatabase"));
+            options.UseNpgsql(Environment.GetEnvironmentVariable("ConnectionString") ?? Configuration.GetConnectionString("WebApiDatabase"));
         }
 
         public DbSet<User> Users { get; set; }
