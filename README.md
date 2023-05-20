@@ -1,6 +1,6 @@
 # Pokerino
 
-Simple unpolished Scrum poker app written with dotnet utilizing SignalR for realtime state distribution.
+Simple unpolished Scrum poker web app written with dotnet and Blazor WASM utilizing SignalR.
 
 ![Logo!](/assets/pokerino.png "Logo")
 
