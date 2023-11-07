@@ -13,7 +13,7 @@ services:
       context: .
       dockerfile: Server/Dockerfile
     environment:
-      - ConnectionString=Host=pokerino.db; Database=martinpetr; Username=admin_user; Include Error Detail=True; Password=postgres;
+      - ConnectionString=$DATABASE_URL
     networks:
       - dev
 
