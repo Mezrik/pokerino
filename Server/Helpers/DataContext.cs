@@ -15,7 +15,18 @@ namespace Pokerino.Server.Helpers
 
         protected override void OnConfiguring(DbContextOptionsBuilder options)
         {
-            options.UseNpgsql(Environment.GetEnvironmentVariable("ConnectionString") ?? Configuration.GetConnectionString("WebApiDatabase"));
+            if (Environment.GetEnvironmentVariable("DATABASE_URL") is not null)
+            {
+                Uri url;
+                bool isUrl = Uri.TryCreate(Environment.GetEnvironmentVariable("DATABASE_URL"), UriKind.Absolute, out url);
+
+                if (url is not null)
+                    options.UseNpgsql($"Host={url.Host}; Database={url.LocalPath.Substring(1)}; Username={url.UserInfo.Split(':')[0]}; Include Error Detail=True; Password={url.UserInfo.Split(':')[1]}; SSL Mode=Disable;");
+            }
+            else
+            {
+                options.UseNpgsql(Configuration.GetConnectionString("WebApiDatabase"));
+            }
         }
 
         public DbSet<User> Users { get; set; }
